@@ -26,7 +26,8 @@
 html {
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: 4rem;
+  scroll-padding-top: 4.5rem;
+  scroll-padding-bottom: 6rem;
 }
 
 body {
@@ -40,7 +41,7 @@ body {
 
 ::selection {
   background: var(--red-dot);
-  color: var(--label);
+  color: var(--on-accent);
 }
 
 :where(a, button, [tabindex]):focus-visible {
@@ -74,13 +75,19 @@ body {
       to bottom,
       var(--wall) 0%,
       var(--wall) 46%,
-      var(--wall-shade) calc(78% - 1px),
-      var(--floor-line) calc(78% - 1px),
-      var(--floor-line) calc(78% + 1px),
-      var(--floor) calc(78% + 1px),
+      var(--wall-shade) calc(var(--wall-horizon, 78%) - 1px),
+      var(--floor-line) calc(var(--wall-horizon, 78%) - 1px),
+      var(--floor-line) calc(var(--wall-horizon, 78%) + 1px),
+      var(--floor) calc(var(--wall-horizon, 78%) + 1px),
       color-mix(in oklab, var(--floor) 82%, var(--wall-shade)) 100%
     );
   transition: background 0.45s ease;
+}
+
+.entrance {
+  /* Keep the floor below the content even when the entrance grows past one viewport. */
+  --wall-horizon: calc(100% - 22svh);
+  padding-bottom: calc(22svh + 2rem);
 }
 
 /* ───────────── Gallery: vertical by default, horizontal on desktop ───────────── */
@@ -136,6 +143,7 @@ body {
   }
   .bay {
     flex: 1;
+    min-width: 0;
     min-height: 0;
     height: 100%;
     padding: 4.5rem 2vw 22vh;
@@ -156,10 +164,14 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
+  max-width: 100%;
+  min-width: 0;
 }
 /* Small screens: label hangs below, offset to the right. */
 .hang > figcaption {
   align-self: flex-end;
+  max-width: calc(100% - 7px);
+  margin-right: 7px;
 }
 
 @media (min-width: 640px) {
@@ -205,9 +217,36 @@ body {
   }
 }
 
+/* Frame + mat are part of the available width, not extra viewport overflow. */
+.hang-link { max-width: 100%; min-width: 0; }
+.frame { --frame-pad: 0px; --mat-pad: clamp(14px, 2.6vw, 40px); }
+.frame[data-frame="black"], .frame[data-frame="white"] { --frame-pad: clamp(8px, 1.1vw, 14px); }
+.frame[data-frame="oak"] { --frame-pad: clamp(9px, 1.25vw, 16px); }
+.frame[data-frame="none"] { --mat-pad: 0px; }
+
+@media (max-width: 639px) {
+  .art-box, .art-box[data-size="large"] {
+    max-width: calc(100vw - 3.5rem - 2 * (var(--frame-pad) + var(--mat-pad)));
+  }
+}
+
+@media (min-width: 640px) {
+  .hang > figcaption { flex: none; }
+  .hang .art-box {
+    max-width: calc(100vw - 7rem - 15rem - 2 * (var(--frame-pad) + var(--mat-pad)));
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .bay .hang .art-box {
+    max-width: calc(52vw - 4vw - 15rem - clamp(1.5rem, 2.4vw, 2.75rem) - 7px - 2 * (var(--frame-pad) + var(--mat-pad)));
+  }
+}
+
 /* Frame + mat + two-layer shadow */
 .frame {
   position: relative;
+  max-width: 100%;
   box-shadow:
     0 1px 1px var(--shadow-contact),
     0 2px 4px var(--shadow-contact),
@@ -218,11 +257,11 @@ body {
 }
 
 .frame[data-frame="black"] {
-  padding: clamp(8px, 1.1vw, 14px);
+  padding: var(--frame-pad);
   background: linear-gradient(135deg, var(--frame-black-edge), var(--frame-black) 40%);
 }
 .frame[data-frame="oak"] {
-  padding: clamp(9px, 1.25vw, 16px);
+  padding: var(--frame-pad);
   background:
     repeating-linear-gradient(
       100deg,
@@ -232,12 +271,12 @@ body {
     linear-gradient(135deg, var(--frame-oak-light), var(--frame-oak) 45%, var(--frame-oak-dark));
 }
 .frame[data-frame="white"] {
-  padding: clamp(8px, 1.1vw, 14px);
+  padding: var(--frame-pad);
   background: linear-gradient(135deg, var(--frame-white), var(--frame-white-edge));
 }
 
 .mat {
-  padding: clamp(14px, 2.6vw, 40px);
+  padding: var(--mat-pad);
   background: var(--mat);
   box-shadow: inset 0 0 0 1px var(--mat-bevel), inset 2px 3px 6px var(--shadow-contact);
 }
@@ -269,6 +308,8 @@ body {
 .wall-label {
   position: relative;
   width: min(15rem, 76vw);
+  max-width: 100%;
+  overflow-wrap: anywhere;
   background: var(--label);
   color: var(--ink);
   border: 1px solid var(--label-edge);
@@ -302,29 +343,18 @@ body {
 
 /* ───────────── After hours: spotlight ───────────── */
 
-@property --spot-x {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 50vw;
-}
-@property --spot-y {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 50vh;
-}
-@property --spot-r {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 260px;
+[data-spot-surface] {
+  position: relative;
+  isolation: isolate;
 }
 
-.spotlight {
-  position: fixed;
+[data-lights="off"] [data-spot-surface]::after {
+  content: "";
+  position: absolute;
   inset: 0;
-  z-index: 30;
   pointer-events: none;
   background: radial-gradient(
-    circle var(--spot-r) at var(--spot-x) var(--spot-y),
+    circle var(--spot-r, 260px) at var(--spot-x, -10000px) var(--spot-y, -10000px),
     transparent 0%,
     transparent 55%,
     color-mix(in oklab, var(--veil) 70%, transparent) 78%,
@@ -332,11 +362,8 @@ body {
   );
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .spotlight[data-mode="focus"],
-  .spotlight[data-mode="center"] {
-    transition: --spot-x 0.45s ease, --spot-y 0.45s ease, --spot-r 0.45s ease;
-  }
+@media print {
+  [data-lights="off"] [data-spot-surface]::after { display: none; }
 }
 
 /* ───────────── Lights switch knob (driven by the html attribute: no flash) ───────────── */
@@ -382,9 +409,14 @@ body {
 .plan-room:focus {
   outline: none;
 }
+.plan-room:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
 .plan-room:focus-visible rect {
   stroke: var(--focus);
   stroke-width: 3;
+  stroke-dasharray: 5 2;
 }
 
 /* ───────────── Print (catalog) ───────────── */

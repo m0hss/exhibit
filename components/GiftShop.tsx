@@ -33,7 +33,7 @@ export function GiftShop() {
               className="group block"
               aria-label={format(ui.giftShop.download, { title: work.title })}
             >
-              <span className="block aspect-[1200/630] overflow-hidden bg-label shadow-[0_1px_2px_var(--shadow-contact),0_14px_30px_-18px_var(--shadow-cast)] transition-transform motion-safe:group-hover:-translate-y-1">
+              <span data-spot-surface className="block aspect-[1200/630] overflow-hidden bg-label shadow-[0_1px_2px_var(--shadow-contact),0_14px_30px_-18px_var(--shadow-cast)] transition-transform motion-safe:group-hover:-translate-y-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={postcardUrl(work)} alt="" width={1200} height={630} loading="lazy" decoding="async" className="block h-full w-full" />
               </span>
@@ -49,6 +49,7 @@ export function GiftShop() {
           </li>
         ))}
       </ul>
+      <p className="mt-16 max-w-[60ch] text-xs leading-relaxed text-ink-soft">{ui.fictionalNotice}</p>
     </section>
   );
 }

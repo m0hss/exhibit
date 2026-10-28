@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Artwork } from "@/components/Artwork";
@@ -15,12 +16,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/works/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const work = getWork(slug);
-  if (!work) return {};
-  return {
-    title: work.title,
+  if (!work) notFound();
+  return pageMetadata({
+    title: `${work.title}, ${work.year}`,
     description: work.note,
-    openGraph: { title: `${work.title}, ${work.year}`, description: work.note },
-  };
+    pathname: `/works/${work.slug}`,
+    image: `/works/${work.slug}/opengraph-image`,
+  });
 }
 
 export default async function WorkPage({ params }: PageProps<"/works/[slug]">) {

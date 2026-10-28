@@ -67,9 +67,9 @@ export function FloorPlan({
   return (
     <nav
       aria-label={label}
-      className="no-print fixed bottom-3 left-3 z-40 w-[7.5rem] border border-label-edge bg-label/95 p-1.5 text-ink shadow-sm sm:bottom-5 sm:left-5 sm:w-[13rem] sm:p-2.5"
+      className="no-print fixed bottom-3 left-3 z-40 w-[12.5rem] border border-label-edge bg-label/95 p-1.5 text-ink shadow-sm sm:bottom-5 sm:left-5 sm:w-[13rem] sm:p-2.5"
     >
-      <svg viewBox={`0 0 ${W} ${H}`} className="block w-full" role="list">
+      <svg viewBox={`0 0 ${W} ${H}`} className="block w-full overflow-visible">
         {/* Passages between rooms */}
         {laid.slice(1).map((r) => (
           <rect key={`p-${r.id}`} x={r.x - gap - 1} y={H / 2 - 5} width={gap + 2} height={10} className="fill-wall-shade" />
@@ -77,7 +77,6 @@ export function FloorPlan({
         {laid.map((r) => (
           <a
             key={r.id}
-            role="listitem"
             href={`#room-${r.id}`}
             className="plan-room"
             aria-current={current === r.id ? "location" : undefined}

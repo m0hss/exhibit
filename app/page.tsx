@@ -1,9 +1,14 @@
+import { pageMetadata } from "@/lib/metadata";
 import { Entrance } from "@/components/Entrance";
 import { FloorPlan } from "@/components/FloorPlan";
 import { Gallery } from "@/components/Gallery";
 import { GiftShop } from "@/components/GiftShop";
 import { Room } from "@/components/Room";
 import { config, rooms, trackVw } from "@/lib/exhibit";
+
+export function generateMetadata() {
+  return pageMetadata();
+}
 
 export default function Home() {
   return (

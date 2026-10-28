@@ -175,6 +175,7 @@ const config = {
   ],
 
   ui: {
+    fictionalNotice: "A fictional exhibition. All artists, commissions and works are invented for this template.",
     skipLink: "Skip to the exhibition",
     nav: { exhibition: "Exhibition", catalog: "Catalog", primary: "Primary" },
     lights: { label: "Lights", on: "Gallery", off: "After hours" },

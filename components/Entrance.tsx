@@ -3,7 +3,7 @@ import { config } from "@/lib/exhibit";
 export function Entrance() {
   const { exhibition, artist, ui } = config;
   return (
-    <section aria-labelledby="exhibition-title" className="wall flex min-h-svh flex-col justify-start px-5 pb-[24svh] pt-24 sm:px-10 lg:px-[5vw] lg:pt-[14vh]" data-spot>
+    <section aria-labelledby="exhibition-title" className="entrance wall flex min-h-svh flex-col justify-start px-5 pt-24 sm:px-10 lg:px-[5vw] lg:pt-[14vh]" data-spot>
       <p className="text-xs uppercase tracking-[0.22em] text-ink-soft">{artist.name}</p>
       <h1
         id="exhibition-title"

@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useLights } from "@/lib/lights";
 import { nearestToCenter } from "@/lib/gallery-nav";
 
 type Mode = "pointer" | "focus" | "center";
 
 /**
- * After hours: everything outside a soft radial spotlight goes dark.
+ * After hours: only artwork surfaces are dimmed outside a radial spotlight.
+ * Labels, controls and focus rings are never covered by a page-wide veil.
  *  - mouse      → the light follows the cursor
  *  - keyboard   → the light sits on the focused work (or focused control)
  *  - touch/none → the light sits on the work nearest the centre of the screen
@@ -15,12 +17,11 @@ type Mode = "pointer" | "focus" | "center";
  */
 export function Spotlight() {
   const lights = useLights();
-  const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (lights !== "off") return;
-    const el = ref.current;
-    if (!el) return;
+    const surfaces = Array.from(document.querySelectorAll<HTMLElement>("[data-spot-surface]"));
 
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     let mode: Mode = "center";
@@ -28,9 +29,12 @@ export function Spotlight() {
     let frame = 0;
 
     const setVars = (x: number, y: number, r: number) => {
-      el.style.setProperty("--spot-x", `${Math.round(x)}px`);
-      el.style.setProperty("--spot-y", `${Math.round(y)}px`);
-      el.style.setProperty("--spot-r", `${Math.round(r)}px`);
+      for (const surface of surfaces) {
+        const box = surface.getBoundingClientRect();
+        surface.style.setProperty("--spot-x", `${Math.round(x - box.left)}px`);
+        surface.style.setProperty("--spot-y", `${Math.round(y - box.top)}px`);
+        surface.style.setProperty("--spot-r", `${Math.round(r)}px`);
+      }
     };
 
     const fitTo = (target: Element) => {
@@ -43,7 +47,6 @@ export function Spotlight() {
 
     const update = () => {
       frame = 0;
-      el.dataset.mode = mode;
       if (mode === "pointer") {
         setVars(pointer.x, pointer.y, pointerRadius());
         return;
@@ -96,6 +99,9 @@ export function Spotlight() {
     document.addEventListener("focusin", onFocus);
     return () => {
       cancelAnimationFrame(frame);
+      for (const surface of surfaces) {
+        for (const property of ["--spot-x", "--spot-y", "--spot-r"]) surface.style.removeProperty(property);
+      }
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("pointerdown", onPointer);
       window.removeEventListener("scroll", schedule);
@@ -103,8 +109,7 @@ export function Spotlight() {
       window.removeEventListener("keydown", onKey);
       document.removeEventListener("focusin", onFocus);
     };
-  }, [lights]);
+  }, [lights, pathname]);
 
-  if (lights !== "off") return null;
-  return <div ref={ref} className="spotlight no-print" aria-hidden="true" data-mode="center" />;
+  return null;
 }

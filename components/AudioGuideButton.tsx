@@ -37,7 +37,7 @@ export function AudioGuideButton({ id, stop, text, lang, playLabel, stopLabel, c
         if (speaking) stopSpeaking();
         else speak(id, text, lang);
       }}
-      className={`inline-flex h-7 items-center gap-1 rounded-full border border-ink/25 px-2 font-mono text-[11px] leading-none text-ink transition-colors hover:border-ink aria-pressed:border-red-dot aria-pressed:bg-red-dot aria-pressed:text-label ${className}`}
+      className={`inline-flex h-7 items-center gap-1 rounded-full border border-ink/60 px-2 font-mono text-[11px] leading-none text-ink transition-colors hover:border-ink aria-pressed:border-red-dot aria-pressed:bg-red-dot aria-pressed:text-[var(--on-accent)] ${className}`}
     >
       {speaking ? (
         <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">

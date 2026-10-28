@@ -22,6 +22,7 @@ export function Artwork({
       <div className="mat">
         <div
           className="art-box"
+          data-spot-surface
           data-size={size}
           style={{ "--ratio": ratio } as CSSProperties}
           {...(label ? { role: "img", "aria-label": label } : {})}

@@ -19,7 +19,7 @@ export function LightsSwitch({ label, on, off }: { label: string; on: string; of
       </span>
       <span
         aria-hidden="true"
-        className="relative inline-flex h-5 w-10 shrink-0 items-center rounded-full border border-ink/40 bg-wall-shade"
+        className="relative inline-flex h-5 w-10 shrink-0 items-center rounded-full border border-ink/60 bg-wall-shade"
       >
         <span className="lights-knob absolute left-0.5 size-3.5 rounded-full bg-ink" />
       </span>

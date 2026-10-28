@@ -56,6 +56,7 @@ export interface ExhibitConfig {
   rooms: Room[];
   works: Work[];
   ui: {
+    fictionalNotice: string;
     skipLink: string;
     nav: { exhibition: string; catalog: string; primary: string };
     lights: { label: string; on: string; off: string };

@@ -4,6 +4,7 @@ import { RouteEffects } from "@/components/RouteEffects";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Spotlight } from "@/components/Spotlight";
 import { config } from "@/lib/exhibit";
+import { exhibitionTitle, pageMetadata } from "@/lib/metadata";
 import { LIGHTS_STORAGE_KEY } from "@/lib/constants";
 import "./globals.css";
 
@@ -16,15 +17,16 @@ const newsreader = Newsreader({
   display: "swap",
 });
 
-const title = `${config.artist.name} — ${config.exhibition.title}`;
-
-export const metadata: Metadata = {
-  metadataBase: new URL(config.site.url),
-  title: { default: title, template: `%s · ${title}` },
-  description: config.site.description,
-  openGraph: { title, description: config.site.description, siteName: config.site.name, type: "website" },
-  twitter: { card: "summary_large_image" },
-};
+export function generateMetadata(): Metadata {
+  const metadata = pageMetadata();
+  // Canonicals belong to pages, so unknown routes do not claim the home URL.
+  return {
+    ...metadata,
+    alternates: undefined,
+    metadataBase: new URL(config.site.url),
+    title: { default: exhibitionTitle, template: `%s · ${exhibitionTitle}` },
+  };
+}
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 

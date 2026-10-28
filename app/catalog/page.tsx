@@ -1,11 +1,17 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { Artwork } from "@/components/Artwork";
 import { PrintButton } from "@/components/PrintButton";
 import { WallLabel } from "@/components/WallLabel";
 import { altFor, config, rooms, works } from "@/lib/exhibit";
 
-export const metadata: Metadata = { title: config.ui.catalog.title };
+export function generateMetadata() {
+  return pageMetadata({
+    title: config.ui.catalog.title,
+    description: `${config.ui.catalog.title}: ${config.site.description}`,
+    pathname: "/catalog",
+  });
+}
 
 export default function CatalogPage() {
   const { exhibition, artist, ui } = config;

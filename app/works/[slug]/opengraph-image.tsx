@@ -1,7 +1,6 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { ImageResponse } from "next/og";
-import { compose, toSvgString, type ArtPalette } from "@/lib/art";
+import { notFound } from "next/navigation";
+import { themeTokens, workArtSource } from "@/lib/og";
 import { artistLine, config, dimensions, getWork, ratioOf, works } from "@/lib/exhibit";
 
 /*
@@ -11,6 +10,7 @@ import { artistLine, config, dimensions, getWork, ratioOf, works } from "@/lib/e
  */
 
 export const size = { width: 1200, height: 630 };
+export const dynamicParams = false;
 export const contentType = "image/png";
 export const alt = `${config.artist.name} — ${config.exhibition.title}`;
 
@@ -18,52 +18,14 @@ export function generateStaticParams() {
   return works.map((w) => ({ slug: w.slug }));
 }
 
-async function themeTokens() {
-  const css = await readFile(path.join(process.cwd(), "app/theme.css"), "utf8");
-  const start = css.indexOf(":root");
-  const block = css.slice(start, css.indexOf("}", start));
-  const token = (name: string) => {
-    const match = block.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,8})`));
-    if (!match?.[1]) throw new Error(`app/theme.css: --${name} must be a hex color in :root`);
-    return match[1];
-  };
-  return {
-    wall: token("wall"),
-    wallShade: token("wall-shade"),
-    floor: token("floor"),
-    ink: token("ink"),
-    label: token("label"),
-    redDot: token("red-dot"),
-    frameBlack: token("frame-black"),
-    frameOak: token("frame-oak"),
-    frameWhite: token("frame-white"),
-    mat: token("mat"),
-    art: {
-      paper: token("art-paper"),
-      red: token("art-red"),
-      blue: token("art-blue"),
-      yellow: token("art-yellow"),
-      black: token("art-black"),
-    } satisfies ArtPalette,
-  };
-}
-
-const MIME: Record<string, string> = { ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".svg": "image/svg+xml" };
-
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const work = getWork(slug);
-  if (!work) throw new Error(`Unknown work: ${slug}`);
+  if (!work) notFound();
   const t = await themeTokens();
   const ratio = ratioOf(work);
 
-  let src: string;
-  if (work.image) {
-    const file = await readFile(path.join(process.cwd(), "public", work.image.src));
-    src = `data:${MIME[path.extname(work.image.src).toLowerCase()] ?? "image/png"};base64,${file.toString("base64")}`;
-  } else {
-    src = `data:image/svg+xml;base64,${Buffer.from(toSvgString(compose(work.slug, ratio), t.art)).toString("base64")}`;
-  }
+  const src = await workArtSource(work, t.art);
 
   // Fit the art inside a 640×440 box on the left wall.
   const boxW = 600;
@@ -112,7 +74,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           >
             <span style={{ fontWeight: 700 }}>{artistLine()}</span>
             <span style={{ fontSize: 30, marginTop: 6 }}>
-              {work.title}, {work.year}
+              {`${work.title}, ${work.year}`}
             </span>
             <span style={{ marginTop: 8, opacity: 0.75 }}>{work.medium}</span>
             <span style={{ opacity: 0.75 }}>{dimensions(work)}</span>

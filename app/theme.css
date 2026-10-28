@@ -22,6 +22,7 @@
   --label: #ffffff;
   --label-edge: color-mix(in oklab, var(--ink) 10%, var(--label));
   --red-dot: #d2232a;
+  --on-accent: #ffffff;
 
   /* Frames & mat */
   --frame-black: #141414;
@@ -68,6 +69,7 @@
   --label: #1b1b1b;
   --label-edge: color-mix(in oklab, var(--ink) 12%, var(--label));
   --red-dot: #e5484d;
+  --on-accent: #101010;
 
   --frame-white: #e9e6df;
   --frame-white-edge: #a9a49b;
