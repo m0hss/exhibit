@@ -1,0 +1,107 @@
+/*
+ * Exhibit — design tokens.
+ * Every color in the template lives here. Components only reference these variables.
+ *
+ *   :root                    → "gallery" (lights on)
+ *   [data-lights="off"]      → "after hours" (lights off)
+ */
+
+:root {
+  /* Walls & floor */
+  --wall: #f3f1ec;
+  --wall-shade: #e8e4dc;
+  --floor: #d9d3c7;
+  --floor-line: color-mix(in oklab, var(--ink) 18%, var(--floor));
+
+  /* Type */
+  --ink: #161616;
+  --muted: #85807a; /* decorative / large type only — see README "Contrast" */
+  --ink-soft: color-mix(in oklab, var(--ink) 78%, var(--wall)); /* small secondary text, AA on wall & label */
+
+  /* Wall label & sticker */
+  --label: #ffffff;
+  --label-edge: color-mix(in oklab, var(--ink) 10%, var(--label));
+  --red-dot: #d2232a;
+
+  /* Frames & mat */
+  --frame-black: #141414;
+  --frame-black-edge: #2b2b2b;
+  --frame-oak: #b98a57;
+  --frame-oak-light: #d2a774;
+  --frame-oak-dark: #8c6238;
+  --frame-white: #fbfaf7;
+  --frame-white-edge: #dcd8cf;
+  --mat: #fbf9f4;
+  --mat-bevel: #e6e1d6;
+
+  /* Shadows (two layers: contact + cast) */
+  --shadow-contact: rgb(22 22 22 / 0.22);
+  --shadow-cast: rgb(22 22 22 / 0.18);
+
+  /* Interaction */
+  --focus: #1f4fa3;
+  --focus-halo: var(--wall);
+
+  /* After-hours spotlight veil */
+  --veil: rgb(4 4 4 / 0.9);
+
+  /* Generated artworks (fixed palette: works do not change with the lights) */
+  --art-paper: #f3efe6;
+  --art-red: #d2232a;
+  --art-blue: #1f4fa3;
+  --art-yellow: #f2c230;
+  --art-black: #161616;
+
+  color-scheme: light;
+}
+
+[data-lights="off"] {
+  --wall: #101010;
+  --wall-shade: #0a0a0a;
+  --floor: #1a1816;
+  --floor-line: color-mix(in oklab, var(--ink) 14%, var(--floor));
+
+  --ink: #ece8e1;
+  --muted: #8f8a83;
+  --ink-soft: color-mix(in oklab, var(--ink) 80%, var(--wall));
+
+  --label: #1b1b1b;
+  --label-edge: color-mix(in oklab, var(--ink) 12%, var(--label));
+  --red-dot: #e5484d;
+
+  --frame-white: #e9e6df;
+  --frame-white-edge: #a9a49b;
+  --mat: #ece8df;
+  --mat-bevel: #cfc9bc;
+
+  --shadow-contact: rgb(0 0 0 / 0.7);
+  --shadow-cast: rgb(0 0 0 / 0.55);
+
+  --focus: #8fb0ff;
+  --focus-halo: var(--wall);
+
+  color-scheme: dark;
+}
+
+/* Print always uses the gallery palette. */
+@media print {
+  :root,
+  [data-lights="off"] {
+    --wall: #ffffff;
+    --wall-shade: #ffffff;
+    --floor: #ffffff;
+    --ink: #161616;
+    --muted: #5f5b56;
+    --ink-soft: #3a3835;
+    --label: #ffffff;
+    --label-edge: #d9d3c7;
+    --red-dot: #d2232a;
+    --mat: #fbf9f4;
+    --mat-bevel: #e6e1d6;
+    --frame-white: #fbfaf7;
+    --frame-white-edge: #dcd8cf;
+    --shadow-contact: transparent;
+    --shadow-cast: transparent;
+    color-scheme: light;
+  }
+}

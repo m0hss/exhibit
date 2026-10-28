@@ -1,0 +1,447 @@
+@import "tailwindcss";
+@import "./theme.css";
+
+@custom-variant lights-off (&:where([data-lights="off"], [data-lights="off"] *));
+
+/* Map design tokens to Tailwind utilities (bg-wall, text-ink, font-serif …). */
+@theme inline {
+  --color-wall: var(--wall);
+  --color-wall-shade: var(--wall-shade);
+  --color-floor: var(--floor);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-label: var(--label);
+  --color-label-edge: var(--label-edge);
+  --color-red-dot: var(--red-dot);
+  --color-focus: var(--focus);
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ───────────── Base ───────────── */
+
+html {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 4rem;
+}
+
+body {
+  background: var(--wall);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+
+::selection {
+  background: var(--red-dot);
+  color: var(--label);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 5px var(--focus-halo);
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 60;
+  transform: translateY(-200%);
+  background: var(--ink);
+  color: var(--wall);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.875rem;
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ───────────── Wall & floor ───────────── */
+
+.wall {
+  position: relative;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--wall) 0%,
+      var(--wall) 46%,
+      var(--wall-shade) calc(78% - 1px),
+      var(--floor-line) calc(78% - 1px),
+      var(--floor-line) calc(78% + 1px),
+      var(--floor) calc(78% + 1px),
+      color-mix(in oklab, var(--floor) 82%, var(--wall-shade)) 100%
+    );
+  transition: background 0.45s ease;
+}
+
+/* ───────────── Gallery: vertical by default, horizontal on desktop ───────────── */
+
+.gallery-track {
+  display: block;
+}
+
+.room-intro,
+.bay {
+  min-height: 100svh;
+}
+
+.bay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4.25rem 1.25rem 24svh;
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .gallery {
+    height: calc(100vh + (var(--track) - 100) * 1vw);
+  }
+  .gallery-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: clip;
+  }
+  .gallery-track {
+    display: flex;
+    width: calc(var(--track) * 1vw);
+    height: 100%;
+    will-change: transform;
+  }
+  .room {
+    display: flex;
+    flex: none;
+    width: calc(var(--room-w) * 1vw);
+    height: 100%;
+  }
+  .room-intro {
+    flex: none;
+    width: 38vw;
+    min-height: 0;
+    height: 100%;
+  }
+  .room-bays {
+    display: flex;
+    flex: 1;
+    height: 100%;
+  }
+  .bay {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    padding: 4.5rem 2vw 22vh;
+  }
+}
+
+/* Under reduced motion (or on small screens) the gallery never moves. */
+@media not ((min-width: 1024px) and (prefers-reduced-motion: no-preference)) {
+  .gallery-track {
+    transform: none !important;
+  }
+}
+
+/* ───────────── Hanging a work ───────────── */
+
+.hang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+/* Small screens: label hangs below, offset to the right. */
+.hang > figcaption {
+  align-self: flex-end;
+}
+
+@media (min-width: 640px) {
+  .hang > figcaption {
+    align-self: auto;
+  }
+  .hang {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: clamp(1.5rem, 2.4vw, 2.75rem);
+  }
+}
+
+.art-box {
+  --art-max-w: 70vw;
+  --art-max-h: 30svh;
+  width: min(var(--art-max-w), calc(var(--art-max-h) * var(--ratio)));
+  aspect-ratio: var(--ratio);
+}
+
+@media (min-width: 640px) {
+  .art-box {
+    --art-max-w: 46vw;
+    --art-max-h: 50svh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .art-box {
+    --art-max-w: 25vw;
+    --art-max-h: 46vh;
+  }
+}
+
+.art-box[data-size="large"] {
+  --art-max-w: 82vw;
+  --art-max-h: 54svh;
+}
+@media (min-width: 1024px) {
+  .art-box[data-size="large"] {
+    --art-max-w: 46vw;
+    --art-max-h: 62vh;
+  }
+}
+
+/* Frame + mat + two-layer shadow */
+.frame {
+  position: relative;
+  box-shadow:
+    0 1px 1px var(--shadow-contact),
+    0 2px 4px var(--shadow-contact),
+    0 22px 44px -16px var(--shadow-cast),
+    0 40px 70px -40px var(--shadow-cast);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s ease;
+  transform-origin: 50% 40%;
+}
+
+.frame[data-frame="black"] {
+  padding: clamp(8px, 1.1vw, 14px);
+  background: linear-gradient(135deg, var(--frame-black-edge), var(--frame-black) 40%);
+}
+.frame[data-frame="oak"] {
+  padding: clamp(9px, 1.25vw, 16px);
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0 3px,
+      color-mix(in oklab, var(--frame-oak-dark) 22%, transparent) 3px 4px
+    ),
+    linear-gradient(135deg, var(--frame-oak-light), var(--frame-oak) 45%, var(--frame-oak-dark));
+}
+.frame[data-frame="white"] {
+  padding: clamp(8px, 1.1vw, 14px);
+  background: linear-gradient(135deg, var(--frame-white), var(--frame-white-edge));
+}
+
+.mat {
+  padding: clamp(14px, 2.6vw, 40px);
+  background: var(--mat);
+  box-shadow: inset 0 0 0 1px var(--mat-bevel), inset 2px 3px 6px var(--shadow-contact);
+}
+.frame[data-frame="none"] .mat {
+  padding: 0;
+  box-shadow: none;
+}
+
+.art-surface {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 0 1px var(--mat-bevel);
+}
+
+/* Lean in on hover / focus */
+@media (prefers-reduced-motion: no-preference) {
+  .hang-link:hover .frame,
+  .hang-link:focus-visible .frame {
+    transform: scale(1.02);
+  }
+}
+.hang-link:focus-visible {
+  outline-offset: 8px;
+}
+
+/* ───────────── Wall label ───────────── */
+
+.wall-label {
+  position: relative;
+  width: min(15rem, 76vw);
+  background: var(--label);
+  color: var(--ink);
+  border: 1px solid var(--label-edge);
+  box-shadow: 0 1px 2px var(--shadow-contact);
+  padding: 0.85rem 0.95rem 0.95rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  transition: background-color 0.45s ease;
+}
+
+@media (min-width: 640px) {
+  .wall-label {
+    width: 15rem;
+    margin-bottom: 0.25rem;
+    padding: 1rem 1.1rem 1.15rem;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+}
+
+.red-dot {
+  position: absolute;
+  right: -7px;
+  bottom: -7px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--red-dot);
+  box-shadow: 0 1px 1px var(--shadow-contact), inset 0 -1px 2px var(--shadow-contact);
+}
+
+/* ───────────── After hours: spotlight ───────────── */
+
+@property --spot-x {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 50vw;
+}
+@property --spot-y {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 50vh;
+}
+@property --spot-r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 260px;
+}
+
+.spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: radial-gradient(
+    circle var(--spot-r) at var(--spot-x) var(--spot-y),
+    transparent 0%,
+    transparent 55%,
+    color-mix(in oklab, var(--veil) 70%, transparent) 78%,
+    var(--veil) 100%
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spotlight[data-mode="focus"],
+  .spotlight[data-mode="center"] {
+    transition: --spot-x 0.45s ease, --spot-y 0.45s ease, --spot-r 0.45s ease;
+  }
+}
+
+/* ───────────── Lights switch knob (driven by the html attribute: no flash) ───────────── */
+
+.lights-knob {
+  transition: transform 0.25s ease;
+}
+[data-lights="off"] .lights-knob {
+  transform: translateX(1.25rem);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lights-knob,
+  .frame,
+  body,
+  .wall,
+  .wall-label {
+    transition: none;
+  }
+}
+
+/* ───────────── Floor plan ───────────── */
+
+.plan-room rect {
+  fill: color-mix(in oklab, var(--wall) 92%, var(--ink));
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.plan-room text {
+  fill: var(--ink);
+}
+.plan-room[aria-current="location"] rect {
+  fill: var(--ink);
+}
+.plan-room[aria-current="location"] text {
+  fill: var(--wall);
+}
+.plan-room:hover rect {
+  fill: color-mix(in oklab, var(--wall) 75%, var(--ink));
+}
+.plan-room[aria-current="location"]:hover rect {
+  fill: var(--ink);
+}
+.plan-room:focus {
+  outline: none;
+}
+.plan-room:focus-visible rect {
+  stroke: var(--focus);
+  stroke-width: 3;
+}
+
+/* ───────────── Print (catalog) ───────────── */
+
+@media print {
+  @page {
+    margin: 16mm 15mm;
+  }
+  html,
+  body {
+    background: var(--wall) !important;
+    font-size: 10.5pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-page {
+    break-before: page;
+    break-inside: avoid;
+    min-height: 0 !important;
+  }
+  .print-cover {
+    min-height: 240mm !important;
+    break-after: page;
+  }
+  .print-art {
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    gap: 8mm !important;
+  }
+  .print-art .art-box {
+    --art-max-w: 100mm;
+    --art-max-h: 130mm;
+  }
+  .print-art .wall-label {
+    flex: none;
+    width: 52mm;
+    font-size: 8.5pt;
+  }
+  .frame {
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .wall-label {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  .red-dot,
+  .art-surface,
+  .mat {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
