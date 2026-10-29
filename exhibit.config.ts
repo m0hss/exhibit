@@ -13,30 +13,30 @@ const config = {
     name: "Exhibit",
     url: "https://exhibit.example.com",
     description:
-      "Alex Rivera — Working Interfaces, 2016–2026. A solo exhibition of shipped and unshipped software.",
+      "Mira Vale — Working Interfaces, 2016–2026. A solo exhibition of shipped and unshipped software.",
   },
 
   lang: "en-US",
 
   artist: {
-    name: "Alex Rivera",
+    name: "Mira Vale",
     born: 1991,
     based: "Lives and works online",
-    email: "hello@alexrivera.example",
+    email: "hello@miravale.example",
   },
 
   exhibition: {
     title: "Working Interfaces",
-    subtitle: "Alex Rivera",
+    subtitle: "Mira Vale",
     years: "2016–2026",
     hours: "Open daily · Free admission",
     statement:
-      "For ten years Alex Rivera has made software for people who would rather not think about software. This exhibition gathers eight works — some shipped to thousands of users, some that never left a branch — and hangs them as they deserve: one at a time, at eye level, with room to breathe.",
+      "For ten years Mira Vale has made software for people who would rather not think about software. This exhibition gathers eight works — some shipped to thousands of users, some that never left a branch — and hangs them as they deserve: one at a time, at eye level, with room to breathe.",
     curator: "The Exhibit Curatorial Team",
     essay: {
       title: "On interfaces that disappear",
       paragraphs: [
-        "A good interface is an act of hospitality. It anticipates the visitor, removes the coat from their shoulders and points the way to the room they came for. Rivera’s work has always started there: not with the screen, but with the person standing in front of it.",
+        "A good interface is an act of hospitality. It anticipates the visitor, removes the coat from their shoulders and points the way to the room they came for. Vale’s work has always started there: not with the screen, but with the person standing in front of it.",
         "The earliest pieces in this exhibition are dense, eager and a little loud. They were made for small teams at Acme who needed answers on Monday morning. Over time the work grows quieter. Controls recede. Type gets bigger. Defaults get kinder.",
         "Not everything here shipped. The red dots mark the works that reached real users; the rest are studies, prototypes and honest failures. They are shown together because the unshipped work is where most of the learning happened.",
         "Walk slowly. Use the audio guide. Turn the lights off if you would like to see each piece on its own.",
@@ -79,7 +79,7 @@ const config = {
       accession: "EX.2016.01",
       shipped: true,
       room: "early-systems",
-      note: "Rivera’s first paid commission: a bookkeeping screen for a three-person office. Notice the density. Every pixel is doing a job, and the artist would later spend years learning to give some of those pixels the afternoon off.",
+      note: "Vale’s first paid commission: a bookkeeping screen for a three-person office. Notice the density. Every pixel is doing a job, and the artist would later spend years learning to give some of those pixels the afternoon off.",
     },
     {
       slug: "untitled-signup-flow",
